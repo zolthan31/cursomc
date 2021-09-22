@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.zolthan31fps.domain.Categoria;
 import io.zolthan31fps.domain.Cidade;
+import io.zolthan31fps.domain.Cliente;
+import io.zolthan31fps.domain.Endereco;
 import io.zolthan31fps.domain.Estado;
 import io.zolthan31fps.domain.Produto;
+import io.zolthan31fps.domain.enums.TipoCliente;
 import io.zolthan31fps.repositories.CategoriaRepository;
 import io.zolthan31fps.repositories.CidadeRepository;
+import io.zolthan31fps.repositories.ClienteRepository;
+import io.zolthan31fps.repositories.EnderecoRepository;
 import io.zolthan31fps.repositories.EstadoRepository;
 import io.zolthan31fps.repositories.ProdutoRepository;
 
@@ -30,6 +35,12 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired 
 	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -68,6 +79,17 @@ public class CursomcApplication implements CommandLineRunner {
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "63796784097", TipoCliente.PESSOAFISICA);
+		
+		cli1.getTelefones().addAll(Arrays.asList("984874876", "988074549"));
+		
+		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, c1);
+		Endereco e2 = new Endereco(null, "Travessa Bom Jardim", "303", "Sala 808", "Cidade Velha", "38777012", cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
+		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 		
 	}
 
