@@ -1,5 +1,6 @@
 package io.zolthan31fps;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,19 @@ import io.zolthan31fps.domain.Cidade;
 import io.zolthan31fps.domain.Cliente;
 import io.zolthan31fps.domain.Endereco;
 import io.zolthan31fps.domain.Estado;
+import io.zolthan31fps.domain.Pagamento;
+import io.zolthan31fps.domain.PagamentoComBoleto;
+import io.zolthan31fps.domain.PagamentoComCartao;
+import io.zolthan31fps.domain.Pedido;
 import io.zolthan31fps.domain.Produto;
-import io.zolthan31fps.domain.enums.TipoCliente;
+import io.zolthan31fps.domain.enums.EstadoPagamento;
 import io.zolthan31fps.repositories.CategoriaRepository;
 import io.zolthan31fps.repositories.CidadeRepository;
 import io.zolthan31fps.repositories.ClienteRepository;
 import io.zolthan31fps.repositories.EnderecoRepository;
 import io.zolthan31fps.repositories.EstadoRepository;
+import io.zolthan31fps.repositories.PagamentoRepository;
+import io.zolthan31fps.repositories.PedidoRepository;
 import io.zolthan31fps.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,6 +48,12 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -49,12 +62,12 @@ public class CursomcApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Categoria cat1 = new Categoria(null, "Vestuario");
-		Categoria cat2 = new Categoria(null, "Acessorios");
+		Categoria cat1 = new Categoria();
+		Categoria cat2 = new Categoria();
 		
-		Produto p1 = new Produto(null, "Camisa Polo", 80.00);
-		Produto p2 = new Produto(null, "Relogio G-Shok", 170.00);
-		Produto p3 = new Produto(null, "Camiseta", 60.00);
+		Produto p1 = new Produto();
+		Produto p2 = new Produto();
+		Produto p3 = new Produto();
 		
 		cat1.getProdutos().addAll(Arrays.asList(p1, p3));
 		cat2.getProdutos().addAll(Arrays.asList(p2));
@@ -66,8 +79,8 @@ public class CursomcApplication implements CommandLineRunner {
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
-		Estado est1 = new Estado(null, "Minas Gerais");
-		Estado est2 = new Estado(null, "Pará");
+		Estado est1 = new Estado();
+		Estado est2 = new Estado();
 		
 		Cidade c1 = new Cidade(null, "Uberlândia", est1);
 		Cidade c2 = new Cidade(null, "Belém", est2);
@@ -79,7 +92,7 @@ public class CursomcApplication implements CommandLineRunner {
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "63796784097", TipoCliente.PESSOAFISICA);
+		Cliente cli1 = new Cliente();
 		
 		cli1.getTelefones().addAll(Arrays.asList("984874876", "988074549"));
 		
@@ -90,6 +103,22 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), null, cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), null, cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 		
 	}
 
