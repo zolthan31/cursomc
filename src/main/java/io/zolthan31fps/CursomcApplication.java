@@ -13,7 +13,6 @@ import io.zolthan31fps.domain.Cidade;
 import io.zolthan31fps.domain.Cliente;
 import io.zolthan31fps.domain.Endereco;
 import io.zolthan31fps.domain.Estado;
-import io.zolthan31fps.domain.ItemPedido;
 import io.zolthan31fps.domain.Pagamento;
 import io.zolthan31fps.domain.PagamentoComBoleto;
 import io.zolthan31fps.domain.PagamentoComCartao;
